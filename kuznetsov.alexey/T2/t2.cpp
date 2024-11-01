@@ -309,5 +309,3 @@ namespace kuzn
         s_.flags(fmt_);
     }
 }
-
-
