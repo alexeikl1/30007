@@ -59,7 +59,7 @@ int main(int argC, char* argV[])
                     commands::getMax(data);
                 else if (cmd == "COUNT")
                     commands::countFigures(data);
-                else if (cmd == "RMECHO")
+                else if (cmd == "LESSAREA")
                     commands::lessarea(data);
                 else if (cmd == "INTERSECTIONS")
                     commands::intersections(data);
