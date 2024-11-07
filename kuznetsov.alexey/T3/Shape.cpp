@@ -40,7 +40,7 @@ bool kuzn::Segment::isIntersect(const Segment& other, std::pair<double, double>*
 
     if (intr != nullptr)
         *intr = std::make_pair(double(begin.x) + (end.x - begin.x) * t1,
-            double(begin.y) + (end.y - begin.y) * t1); //êîîðäèíàòû òî÷êè ïåðåñå÷åíèÿ
+            double(begin.y) + (end.y - begin.y) * t1);
 
     return true;
 }
@@ -57,9 +57,9 @@ bool kuzn::Polygon::contains(const Point& pnt) const
 
     Point outOfBounds = { maxX + 3, pnt.y };
     Segment ray = { pnt, outOfBounds };
-    auto sgmtPool = createSegmentPool(); //âñå ðåáðà ìíîãîóãîëüíèêà
+    auto sgmtPool = createSegmentPool();
 
-    std::vector<std::pair<double, double>> intrPoints(points.size()); //òî÷êè ïåðåñå÷åíèÿ ëó÷à
+    std::vector<std::pair<double, double>> intrPoints(points.size());
 
     auto addPoint = [&ray]
     (const Segment& sgmt)
@@ -74,15 +74,15 @@ bool kuzn::Polygon::contains(const Point& pnt) const
     auto removeCond = []
     (const std::pair<double, double>& p)
         {
-            return std::isnan(p.first) || std::isnan(p.second); //nan - not a number
+            return std::isnan(p.first) || std::isnan(p.second);
         };
 
     std::transform(sgmtPool.begin(), sgmtPool.end(), intrPoints.begin(), addPoint);
-    auto ri = std::remove_if(intrPoints.begin(), intrPoints.end(), removeCond); //íàïîëíåíèå âåêòîðà
+    auto ri = std::remove_if(intrPoints.begin(), intrPoints.end(), removeCond);
 
-    intrPoints.erase(ri, intrPoints.end()); //óäàëåíèå ïëîõèõ ðåçóëüòàòîâ
+    intrPoints.erase(ri, intrPoints.end());
     std::sort(intrPoints.begin(), intrPoints.end());
-    auto last = std::unique(intrPoints.begin(), intrPoints.end()); //óäàëåíèå äóáëèêàòîâ
+    auto last = std::unique(intrPoints.begin(), intrPoints.end());
     intrPoints.erase(last, intrPoints.end());
 
     return intrPoints.size() & 1;
@@ -113,18 +113,18 @@ bool kuzn::Polygon::isIntersect(const Polygon& other) const
     auto otherSegments = other.createSegmentPool();
     auto ourSegments = createSegmentPool();
 
-    auto countInner = [&] //ac è pnt çàõâàòûâàþòñÿ ïî ññûëêå
+    auto countInner = [&]
     (int ac, const Point& pnt)
         {
             return ac + contains(pnt);
         };
 
-    int inner = std::accumulate(other.points.begin(), other.points.end(), 0, countInner); //ñêëàäûâàåò êîëè÷åñòâî òî÷åê âíóòðè
+    int inner = std::accumulate(other.points.begin(), other.points.end(), 0, countInner);
 
     if (inner != 0)
         return true;
 
-    auto countIntrOneIter = [&] //ïåðåñåêàåòñÿ ëè ñåãìåíò ñ ëþáûì èç ñåãìåíòîâ äðóãîãî ìíîãîóãîëüíèêà
+    auto countIntrOneIter = [&]
     (int ac, const Segment& sgmt)
         {
             auto countIntrNested = [&sgmt]
@@ -145,6 +145,8 @@ bool kuzn::Polygon::operator < (const Polygon& other) const
 {
     return getArea() < other.getArea();
 }
+
+
 
 bool kuzn::Polygon::operator == (const Polygon& other) const
 {

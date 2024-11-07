@@ -6,7 +6,7 @@ const std::string NO_SUCH_FILE = "File not found!";
 const std::string ERROR = "Something goes wrong";
 
 using namespace kuzn;
-
+ 
 int main(int argC, char* argV[])
 {
     if (argC != 2)
@@ -59,7 +59,7 @@ int main(int argC, char* argV[])
                     commands::getMax(data);
                 else if (cmd == "COUNT")
                     commands::countFigures(data);
-                else if (cmd == "LESSAREA")
+                else if (cmd == "RMECHO")
                     commands::lessarea(data);
                 else if (cmd == "INTERSECTIONS")
                     commands::intersections(data);
@@ -69,7 +69,6 @@ int main(int argC, char* argV[])
             catch (const std::string& err)
             {
                 std::cout << err << std::endl;
-                std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             }
         }

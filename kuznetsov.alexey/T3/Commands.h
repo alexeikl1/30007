@@ -11,6 +11,8 @@ namespace commands
 	void getMin(const std::vector<kuzn::Polygon>& data);
 	void getMax(const std::vector<kuzn::Polygon>& data);
 	void countFigures(const std::vector<kuzn::Polygon>& polygons);
+	kuzn::FrameRectangle getFrameRectangle(const std::vector<kuzn::Polygon>& polygons);
+	void checkStream();
 	void lessarea(std::vector<kuzn::Polygon>& value);
 	void intersections(const std::vector<kuzn::Polygon>& data);
 }

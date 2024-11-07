@@ -5,12 +5,10 @@ using namespace std::placeholders;
 
 const std::string I_C = "<INVALID COMMAND>";
 
-//Ïðåîáðàçîâàíèå ñòðîêè â ÷èñëî
+//converter from string to integer
 int commands::convertToNumber(const std::string& str)
 {
     char* end;
-    //ñòðîêó â ÷èñëî (10 - ñèñòåìà ñ÷èñëåíèÿ,
-    //end - óêàçàòåëü íà ïåðâûé ñèìâîë, êîòîðûé íå áûë ïðåîáðàçîâàí
     int convertedResult = strtol(str.c_str(), &end, 10);
     if (*end != 0)
     {
@@ -19,13 +17,13 @@ int commands::convertToNumber(const std::string& str)
     return convertedResult;
 }
 
-//Ïîëó÷åíèå îáùåé ïëîùàäè ôèãóð â çàâèñèìîñòè îò àðãóìåíòà
+//get total area of figures due to parameteres(method)
 void commands::getFullArea(const std::vector<kuzn::Polygon>& polygons)
 {
     std::string argument;
     std::cin >> argument;
     int number = convertToNumber(argument);
-    auto accumulatePolygonsArea = //ïðèáàâëåíèå ïëîùàäè ïîëèãîíà ê îáùåé ïî íóæíûì ïðàâèëàì
+    auto accumulatePolygonsArea =
         [&polygons, &number](double accumulatedArea, const kuzn::Polygon& current, const std::string method)
         {
             double result = accumulatedArea;
@@ -51,7 +49,7 @@ void commands::getFullArea(const std::vector<kuzn::Polygon>& polygons)
     {
         if (argument == "EVEN" || argument == "ODD")
         {
-            std::cout << std::accumulate(polygons.begin(), polygons.end(), 0.0, //ñëîæåíèå ïëîùàäåé âñåõ ïîëèãîíîâ
+            std::cout << std::accumulate(polygons.begin(), polygons.end(), 0.0,
                 std::bind(accumulatePolygonsArea, _1, _2, argument)) << std::endl;
         }
         else if (argument == "MEAN" && polygons.size() != 0)
@@ -64,7 +62,7 @@ void commands::getFullArea(const std::vector<kuzn::Polygon>& polygons)
             throw I_C;
         }
     }
-    else if (number > 2) //åñëè àðãóìåíò öèôðà
+    else if (number > 2)
     {
         std::cout << std::accumulate(polygons.begin(), polygons.end(), 0.0,
             std::bind(accumulatePolygonsArea, _1, _2, "SPECIAL")) << std::endl;
@@ -75,12 +73,7 @@ void commands::getFullArea(const std::vector<kuzn::Polygon>& polygons)
     }
 }
 
-// Ôóíêöèÿ ñðàâíåíèÿ, êîòîðàÿ âîçâðàùàåò true, åñëè ïåðâûé ïîëèãîí èìååò ìåíüøå âåðøèí, ÷åì âòîðîé
-bool comparePolygonsByVerticesCount(const kuzn::Polygon& a, const kuzn::Polygon& b) {
-    return a.points.size() < b.points.size();
-}
-
-//âû÷èñëåíèå ìèíèìàëüíîé ïëîùàäè/ðàçìåðà
+//calculate min area
 void commands::getMin(const std::vector<kuzn::Polygon>& data)
 {
     std::string arg;
@@ -90,25 +83,22 @@ void commands::getMin(const std::vector<kuzn::Polygon>& data)
     if (data.size() == 0)
         throw I_C;
 
+    std::vector<size_t> sizeVec(data.size());
+
+    std::transform(data.begin(), data.end(), sizeVec.begin(),
+        [](const Polygon& poly) { return poly.points.size(); });
+    auto poly = std::min_element(data.begin(), data.end());
+    auto minSize = std::min_element(sizeVec.begin(), sizeVec.end());
+
     if (arg == "AREA")
-    {
-        //ïîëèãîí ñ íàèìåíüøîé ïëîùàäüþ
-        auto poly = std::min_element(data.begin(), data.end());
         std::cout << poly->getArea() << std::endl;
-    }
     else if (arg == "VERTEXES")
-    {
-        //ïîëèãîí ñ íàèìåíüøèì êîë-âîì âåðøèí
-        auto minSize = std::min_element(data.begin(), data.end(), comparePolygonsByVerticesCount);
-        std::cout << minSize->points.size() << std::endl;
-    }
+        std::cout << *minSize << std::endl;
     else
-    {
         throw I_C;
-    }
 }
 
-//âû÷èñëåíèå ìàêñèìàëüíîé ïëîùàäè/ðàçìåðà
+//calculate max area
 void commands::getMax(const std::vector<kuzn::Polygon>& data)
 {
     std::string arg;
@@ -121,9 +111,9 @@ void commands::getMax(const std::vector<kuzn::Polygon>& data)
     std::vector<size_t> sizeVec(data.size());
 
     std::transform(data.begin(), data.end(), sizeVec.begin(),
-        [](const Polygon& poly) { return poly.points.size(); }); //êîë-âî òî÷åê â ïîëèãîíå
+        [](const Polygon& poly) { return poly.points.size(); });
     auto poly = std::max_element(data.begin(), data.end());
-    auto maxSize = std::max_element(sizeVec.begin(), sizeVec.end()); //ìàêñèìóì òî÷åê ó ïîëèãîíà
+    auto maxSize = std::max_element(sizeVec.begin(), sizeVec.end());
 
     if (arg == "AREA")
         std::cout << poly->getArea() << std::endl;
@@ -133,14 +123,12 @@ void commands::getMax(const std::vector<kuzn::Polygon>& data)
         throw I_C;
 }
 
-//âû÷èñëåíèå êîëè÷åñòâà ôèãóð â çàâèñèìîñòè îò àðãóìåíòà
+//calculate all figures due to parameteres(method)
 void commands::countFigures(const std::vector<kuzn::Polygon>& polygons)
 {
     std::string argument;
     std::cin >> argument;
     int number = convertToNumber(argument);
-
-    //ïðîõîäèìñÿ ïî ïîëèãîíàì è óâåëè÷èâàåì ñ÷åò÷èê, åñëè èõ ðàçìåð ïîäõîäèò ïîä óñëîâèå
     auto count = [&number](const kuzn::Polygon& poly, const std::string& method)
         {
             if (method == "EVEN")
@@ -157,7 +145,6 @@ void commands::countFigures(const std::vector<kuzn::Polygon>& polygons)
             }
             return false;
         };
-
     if (number == -1)
     {
         if (argument == "EVEN" || argument == "ODD")
@@ -179,40 +166,131 @@ void commands::countFigures(const std::vector<kuzn::Polygon>& polygons)
     }
 }
 
-//êîë-âî ïîëèãîíîâ ñ ïëîùàäüþ ìåíüøå, ÷åì ó ïåðåäàííîãî ïîëèãîíà
+//get frame of figures
+kuzn::FrameRectangle commands::getFrameRectangle(const std::vector<kuzn::Polygon>& polygons)
+{
+    kuzn::FrameRectangle frame;
+    frame.bottom_left.x = std::numeric_limits<int>::max();
+    frame.bottom_left.y = std::numeric_limits<int>::max();
+    frame.top_right.x = std::numeric_limits<int>::min();
+    frame.top_right.y = std::numeric_limits<int>::min();
+    auto comparatorwithX =
+        [](const kuzn::Point& pointFirst, const kuzn::Point& pointSecond)
+        {
+            return pointFirst.x < pointSecond.x;
+        };
+    auto comparatorwithY =
+        [](const kuzn::Point& pointFirst, const kuzn::Point& pointSecond)
+        {
+            return pointFirst.y < pointSecond.y;
+        };
+    frame = std::accumulate(polygons.begin(), polygons.end(), frame,
+        [&](kuzn::FrameRectangle frame, const kuzn::Polygon& polygon)
+        {
+            auto min_x = std::min_element(polygon.points.begin(), polygon.points.end(), comparatorwithX);
+            auto min_y = std::min_element(polygon.points.begin(), polygon.points.end(), comparatorwithY);
+            auto max_x = std::max_element(polygon.points.begin(), polygon.points.end(), comparatorwithX);
+            auto max_y = std::max_element(polygon.points.begin(), polygon.points.end(), comparatorwithY);
+            frame.bottom_left.x = std::min(frame.bottom_left.x, min_x->x);
+            frame.bottom_left.y = std::min(frame.bottom_left.y, min_y->y);
+            frame.top_right.x = std::max(frame.top_right.x, max_x->x);
+            frame.top_right.y = std::max(frame.top_right.y, max_y->y);
+            return frame;
+        }
+    );
+    return frame;
+}
+
+void commands::checkStream()
+{
+    int streamState = std::cin.get();
+
+    while (streamState != int('\n') && streamState != EOF)
+    {
+        if (!isspace(streamState))
+        {
+            std::cin.setstate(std::istream::failbit);
+            break;
+        }
+        streamState = std::cin.get();
+    }
+
+    if (!std::cin)
+    {
+        std::cin.clear();
+        throw I_C;
+    }
+}
+
 void commands::lessarea(std::vector<kuzn::Polygon>& value)
 {
-    kuzn::Polygon mainEl, otherEl;
-    std::cin >> mainEl; //îñíîâíîé ïîëèãîí
-
-    if (!std::cin || std::cin.peek() != '\n')
+    if (value.empty())
     {
+        throw I_C;
+    }
+
+    kuzn::Polygon mainEl, otherEl;
+    std::cin >> mainEl;
+    int prov = std::cin.get();
+    for (;;)
+    {
+        if (prov == int('\n') || prov == std::iostream::traits_type::eof())
+        {
+            break;
+        }
+        if (!isspace(prov))
+        {
+            std::cin.setstate(std::ios_base::failbit);
+            break;
+        }
+        prov = std::cin.get();
+    }
+
+    if (std::cin.fail())
+    {
+        std::cin.clear();
         throw I_C;
     }
 
     auto calcConcur = [&](const kuzn::Polygon tPolygon)
         {
             otherEl = tPolygon;
-            bool rez = mainEl.getArea() > otherEl.getArea(); //ïîäñ÷¸ò ïîëèãîíîâ
+            bool rez = mainEl.getArea() > otherEl.getArea();
             return rez;
         };
     std::cout << std::count_if(value.begin(), value.end(), calcConcur) << "\n";
 }
 
-//êîë-âî ïîëèãîíîâ, ñ êîòîðûìè ïåðåñåêàåòñÿ
+//get intersections
 void commands::intersections(const std::vector<kuzn::Polygon>& data)
 {
     Polygon trg;
 
     std::cin >> trg;
 
-    if (!std::cin || std::cin.peek() != '\n')
+    int ch = std::cin.get();
+
+    while (ch != int('\n') && ch != EOF)
     {
+        if (!isspace(ch))
+        {
+            std::cin.setstate(std::istream::failbit);
+            break;
+        }
+        ch = std::cin.get();
+    }
+
+    if (!std::cin)
+    {
+        std::cin.clear();
         throw I_C;
     }
-    // Èñïîëüçóåì std::bind äëÿ ñîçäàíèÿ îáúåêòà ôóíêöèè
-    auto cntFunc = std::bind(&Polygon::isIntersect, _1, std::ref(trg));
 
-    // Âûçûâàåì std::count_if ñ îáúåêòîì ôóíêöèè, ñîçäàííûì ñ ïîìîùüþ std::bind
+    auto cntFunc = [&trg]
+    (const Polygon& poly)
+        {
+            return poly.isIntersect(trg);
+        };
+
     std::cout << std::count_if(data.begin(), data.end(), cntFunc) << std::endl;
 }
