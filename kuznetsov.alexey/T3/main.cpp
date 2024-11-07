@@ -1,11 +1,12 @@
 #include "Commands.h"
+
 const std::string I_C = "<INVALID COMMAND>";
 const std::string INCORRECT_USAGE = "Incorrect usage!";
 const std::string NO_SUCH_FILE = "File not found!";
 const std::string ERROR = "Something goes wrong";
 
 using namespace kuzn;
- 
+
 int main(int argC, char* argV[])
 {
     if (argC != 2)
@@ -15,14 +16,19 @@ int main(int argC, char* argV[])
     }
 
     std::string fileName = argV[1];
+
     std::ifstream file(fileName);
+
     if (!file)
     {
         std::cerr << NO_SUCH_FILE << std::endl;
         return EXIT_FAILURE;
     }
+
     std::cout << std::setprecision(1) << std::fixed;
+
     std::vector<Polygon> data;
+
     while (!file.eof())
     {
         std::copy(std::istream_iterator<Polygon>(file),
@@ -34,12 +40,15 @@ int main(int argC, char* argV[])
             file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
     }
+
     try
     {
         while (!std::cin.eof())
         {
             std::string cmd;
+
             std::cin >> cmd;
+
             try
             {
                 if (cmd == "AREA")
@@ -63,6 +72,7 @@ int main(int argC, char* argV[])
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             }
         }
+
         return EXIT_SUCCESS;
     }
     catch (...)
@@ -71,3 +81,4 @@ int main(int argC, char* argV[])
         return EXIT_FAILURE;
     }
 }
+
