@@ -294,3 +294,6 @@ void commands::intersections(const std::vector<kuzn::Polygon>& data)
 
     std::cout << std::count_if(data.begin(), data.end(), cntFunc) << std::endl;
 }
+
+
+

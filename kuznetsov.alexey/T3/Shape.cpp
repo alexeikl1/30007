@@ -263,3 +263,4 @@ std::ostream& kuzn::operator << (std::ostream& out, const kuzn::Polygon& poly)
     }
     return out;
 }
+

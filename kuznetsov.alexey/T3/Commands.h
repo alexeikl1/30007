@@ -15,6 +15,9 @@ namespace commands
 	void checkStream();
 	void lessarea(std::vector<kuzn::Polygon>& value);
 	void intersections(const std::vector<kuzn::Polygon>& data);
+
 }
 
 #endif
+
+
