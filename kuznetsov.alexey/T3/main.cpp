@@ -1,5 +1,4 @@
 #include "Commands.h"
-
 const std::string I_C = "<INVALID COMMAND>";
 const std::string INCORRECT_USAGE = "Incorrect usage!";
 const std::string NO_SUCH_FILE = "File not found!";
@@ -16,9 +15,7 @@ int main(int argC, char* argV[])
     }
 
     std::string fileName = argV[1];
-
     std::ifstream file(fileName);
-
     if (!file)
     {
         std::cerr << NO_SUCH_FILE << std::endl;
